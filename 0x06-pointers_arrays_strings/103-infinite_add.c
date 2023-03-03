@@ -1,47 +1,78 @@
 #include "main.h"
-#include <stdio.h>
 
 /**
- * print_buffer - print a buffer
- * @b: the buffer to print
- * @size: the number of bytes to print
- *
- * Description: This function prints the content of of size bytes of the
- * buffer pointed to by b. 10 bytes are printed per line, with each line
- * prefixed with the position of the first byte, starting at 0. Each line
- * shows the heaxadecimal content of the buffer 2 bytes at a time, with
- * each pair separated by a space, followed by the content of the buffer
- * with non-printable characters shown as a `.'.
- *
- * Return: void
+ * rev_string - reverse array
+ * @n: integer params
+ * Return: 0
  */
 
-void print_buffer(char *b, int size)
+void rev_string(char *n)
 {
-	int b_pos;
-	int l_pos;
+	int i = 0;
+	int j = 0;
+	char temp;
 
-	for (b_pos = 0; b_pos < size; b_pos += 10)
+	while (*(n + i) != '\0')
 	{
-		printf("%08x: ", b_pos);
-		for (l_pos = 0; l_pos < 10; ++l_pos)
-		{
-			if (b_pos + l_pos < size)
-				printf("%02x", b[b_pos + l_pos]);
-			else
-				printf("  ");
-			if (l_pos % 2)
-				putchar(' ');
-		}
-		for (l_pos = 0; l_pos < 10 && b_pos + l_pos < size; ++l_pos)
-		{
-			if (b[b_pos + l_pos] < 32 || b[b_pos + l_pos] > 126)
-				putchar('.');
-			else
-				putchar(b[b_pos + l_pos]);
-		}
-		if (b_pos + l_pos < size)
-			putchar('\n');
+		i++;
 	}
-	putchar('\n');
+	i--;
+
+	for (j = 0; j < i; j++, i--)
+	{
+		temp = *(n + j);
+		*(n + j) = *(n + i);
+		*(n + i) = temp;
+	}
+}
+
+/**
+ * infinite_add - add 2 numbers together
+ * @n1: text representation of 1st number to add
+ * @n2: text representation of 2nd number to add
+ * @r: pointer to buffer
+ * @size_r: buffer size
+ * Return: pointer to calling function
+ */
+
+char *infinite_add(char *n1, char *n2, char *r, int size_r)
+{
+	int overflow = 0, i = 0, j = 0, digits = 0;
+	int val1 = 0, val2 = 0, temp_tot = 0;
+
+	while (*(n1 + i) != '\0')
+		i++;
+	while (*(n2 + j) != '\0')
+		j++;
+	i--;
+	j--;
+	if (j >= size_r || i >= size_r)
+		return (0);
+	while (j >= 0 || i >= 0 || overflow == 1)
+	{
+		if (i < 0)
+			val1 = 0;
+		else
+			val1 = *(n1 + i) - '0';
+		if (j < 0)
+			val2 = 0;
+		else
+			val2 = *(n2 + j) - '0';
+		temp_tot = val1 + val2 + overflow;
+		if (temp_tot >= 10)
+			overflow = 1;
+		else
+			overflow = 0;
+		if (digits >= (size_r - 1))
+			return (0);
+		*(r + digits) = (temp_tot % 10) + '0';
+		digits++;
+		j--;
+		i--;
+	}
+	if (digits == size_r)
+		return (0);
+	*(r + digits) = '\0';
+	rev_string(r);
+	return (r);
 }
